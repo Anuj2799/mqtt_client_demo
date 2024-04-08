@@ -1,5 +1,5 @@
 class MQTTConstants {
-  static const String host = 'test.mosquitto.org'; // Local - 192.168.1.49 && (Staging && Live) - 13.50.18.63
+  static const String host = 'test.mosquitto.org';
   static const int port = 1883; // 1883 for staging or local && 1884 for production
   static const int keepAlivePeriod = 2; // value here will be in the seconds
   static const bool secure = false;

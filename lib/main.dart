@@ -42,16 +42,18 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final MQTTManager _mqttManager = MQTTManager();
-  String? deviceIdForIos;
-  String? deviceIdForAndroid;
-  String? deviceId;
+  String? _deviceIdForIos;
+  String? _deviceIdForAndroid;
+  String? _deviceId;
+  int? _timeStamp;
+  late String _uniqueIdentifier;
   final List<String> _listOfChats = [];
   final TextEditingController _chatController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    initializeMqtt();
+    _initializeMqtt();
   }
 
   @override
@@ -71,7 +73,10 @@ class _MyHomePageState extends State<MyHomePage> {
         child: SafeArea(
           child: SingleChildScrollView(
             child: SizedBox(
-              height: MediaQuery.of(context).size.height - 20.0,
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height - 20.0,
               child: Column(
                 children: [
                   Expanded(
@@ -182,17 +187,23 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<void> initializeMqtt() async {
+  Future<void> _initializeMqtt() async {
     if (Platform.isIOS) {
-      deviceIdForIos = await _getIdForIOS();
+      _deviceIdForIos = await _getIdForIOS();
     } else if (Platform.isAndroid) {
-      deviceIdForAndroid = await _getIdForAndroid();
+      _deviceIdForAndroid = await _getIdForAndroid();
     }
 
-    deviceId = Platform.isIOS ? deviceIdForIos : deviceIdForAndroid;
+    _deviceId = Platform.isIOS ? _deviceIdForIos : _deviceIdForAndroid;
+    _timeStamp = DateTime
+        .now()
+        .millisecondsSinceEpoch;
+    _uniqueIdentifier = 'some_unique_identifier_$_deviceId#$_timeStamp';
 
-    await _mqttManager.connect(identifier: 'some_unique_identifier_$deviceId');
+    await _mqttManager.disconnect();
+    await _mqttManager.connect(identifier:_uniqueIdentifier);
     await _mqttManager.subscribe(MQTTConstants.subscribeTopic(), (data) {
+      debugPrint('Data we received is : $data');
       _listOfChats.add(data);
       setState(() {});
     });
