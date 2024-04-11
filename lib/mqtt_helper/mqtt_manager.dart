@@ -64,6 +64,7 @@ class MQTTManager {
 
   void _onDisconnected() {
     if (_client?.connectionStatus?.returnCode == MqttConnectReturnCode.noneSpecified) {}
+
   }
 
   void _onConnected() {

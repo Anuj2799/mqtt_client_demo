@@ -198,6 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _timeStamp = DateTime
         .now()
         .millisecondsSinceEpoch;
+
     _uniqueIdentifier = 'some_unique_identifier_$_deviceId#$_timeStamp';
 
     await _mqttManager.disconnect();
